@@ -75,7 +75,26 @@ module.exports = function(robot) {
     // We don't necessarily know the order of the files in the directory,
     // nor do we know how long it will take to read each file, so the
     // hubot may reply with todo items in a totally arbitrary order.
-
+    
+    fs.readdir(DATA_DIR, function(err, files) {
+      if (err) {
+        msg.reply("Oh no... I couldn't look for todos...");
+      } else if (files.length === 0) {
+        msg.reply("The list is empty!");
+      } else {
+        for(let i = 0; i < files.length; i++) {
+          fs.readFile(DATA_DIR + "/" + files[i], function (err, data) {
+            if(err) {
+              // msg.reply(files[i]); <= For debugging
+              msg.reply("Uh oh! Had trouble opening a todo...");
+            } else {
+              // Bam. There's at least one todo and no errors!
+              msg.reply(files[i] + ": " + data);
+            }
+          });
+        }
+      }
+    });
   });
 
   // Handler for 'hubot add <item> to my todo list'
@@ -95,7 +114,18 @@ module.exports = function(robot) {
     // > OK! I added <todo> to the todo list
 
     // Note that file names have no extensions. They are just UUIDs.
-
+    
+    let filepath = DATA_DIR + "/" + uuid.v4();
+    
+    // Our new todo item's path is defined!
+    
+    fs.writeFile(filepath, todo, function (err) {
+      if (err) {
+        msg.reply("Oh no... I couldn't write the todo file...");
+      } else {
+        msg.reply("OK! I added " + todo + " to the todo list");
+      }
+    });
   });
 
   // Handler for 'hubot <itemID> is done'
@@ -111,6 +141,19 @@ module.exports = function(robot) {
     // Otherwise, it replies with
 
     // > OK! Removed <id>
-
+    
+    var filepath = DATA_DIR + "/" + id;
+    
+    try {
+      fs.unlink(filepath, function () {
+        msg.reply("OK! Removed " + id);
+      });
+    } catch (error) {
+      msg.reply("Couldn't find " + id);
+    }
+    
+    // According to homework docs, no try-catch statements needed
+    // Consider how to respond to error w/o try-catch
+    
   });
 };

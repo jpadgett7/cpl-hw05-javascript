@@ -50,6 +50,13 @@ module.exports = function(robot) {
     // hubot should reply with:
 
     // > The headline site was empty!
-
+    request(HEADLINE_URL, function (error, response, body) {
+        if (!error && response.statusCode != 200) {
+            msg.reply('I couldn\'t get any headlines...');
+        }
+        else {
+            // huh
+        }
+    })
   });
 };
