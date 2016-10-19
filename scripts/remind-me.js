@@ -25,13 +25,21 @@ module.exports = function(robot) {
 
     // > Don't forget to <task>!
 
-    let realTime = numSeconds*1000;
-    msg.reply('OK. I\'ll remind you to ' + task + ' in ' 
-      + numSeconds + ' seconds.');
-    
-    setTimeout(function () {
-        msg.reply('Don\'t forget to ' + task);
-    }, realTime);
+    let realTime = numSeconds * 1000;
+    let secString;
+
+    if (realTime == 1000) {
+      secString = ' second.';
+    } else {
+      secString = ' seconds.';
+    }
+
+    msg.reply('OK. I\'ll remind you to ' + task + ' in ' +
+      numSeconds + secString);
+
+    setTimeout(function() {
+        msg.reply('Don\'t forget to ' + task + '!');
+      }, realTime);
 
   });
 };

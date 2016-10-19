@@ -50,13 +50,28 @@ module.exports = function(robot) {
     // hubot should reply with:
 
     // > The headline site was empty!
-    request(HEADLINE_URL, function (error, response, body) {
-        if (!error && response.statusCode != 200) {
-            msg.reply('I couldn\'t get any headlines...');
+
+    msg.reply('Okey doke. I\'ll go fetch a headline!');
+
+    request(HEADLINE_URL, function(error, response, body) {
+      if (!error && response.statusCode != 200) {
+        msg.reply('I couldn\'t get any headlines...');
+      } else {
+        if (body == '') {
+          msg.reply('The headline was empty!');
+        } else {
+          let headlinesArr = s.lines(body);
+          let rNum;
+
+          do {
+            rNum = _.random(0, headlinesArr.length);
+          } while (!headlinesArr[rNum]);
+
+          // Post-check so we don't end up with "undefined" headline
+
+          msg.reply(headlinesArr[rNum]);
         }
-        else {
-            // huh
-        }
-    })
+      }
+    });
   });
 };
