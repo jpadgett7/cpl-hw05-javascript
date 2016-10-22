@@ -34,7 +34,7 @@ module.exports = function(robot) {
     // provided callback will receive three parameters: `error`,
     // `response`, and `body`.
 
-    // If the error parameter **has no value** (hint, hint) or if the
+    // If the error parameter **has value** (hint, hint) or if the
     // response's status code is not 200 (`HTTP OK`), then the hubot
     // should reply with:
 
@@ -54,7 +54,7 @@ module.exports = function(robot) {
     msg.reply('Okey doke. I\'ll go fetch a headline!');
 
     request(HEADLINE_URL, function(error, response, body) {
-      if (!error && response.statusCode != 200) {
+      if (error || response.statusCode != 200) {
         msg.reply('I couldn\'t get any headlines...');
       } else {
         if (body == '') {
